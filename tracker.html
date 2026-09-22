@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Marks Tracker</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1E3A8A',
+                        success: '#22c55e',
+                        danger: '#ef4444',
+                        pending: '#94a3b8'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Custom Scrollbar for tables */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900 bg-opacity-50 backdrop-blur-sm fade-in">
+        <div class="glass-card rounded-2xl p-8 w-full max-w-md mx-4 text-center">
+            <div class="w-16 h-16 bg-blue-100 text-primary rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-800 mb-2">Secure Access</h2>
+            <p class="text-slate-500 mb-6 text-sm">Enter the passcode to access your Professional Engineering Dashboard.</p>
+            
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <input type="password" id="passcode-input" placeholder="Enter Passcode" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-center text-lg tracking-widest">
+                    <p id="login-error" class="text-danger text-sm mt-2 hidden"><i class="fa-solid fa-circle-exclamation mr-1"></i> Incorrect passcode. Try 'engineer'.</p>
+                </div>
+                <button type="submit" class="w-full bg-primary hover:bg-blue-900 text-white font-semibold py-3 px-4 rounded-lg transition-colors shadow-md">
+                    Unlock Dashboard
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="app-container" class="hidden flex-1 flex flex-col md:flex-row w-full max-w-7xl mx-auto">
+        
+        <!-- Sidebar -->
+        <aside class="w-full md:w-64 bg-white border-r border-slate-200 p-6 flex flex-col justify-between hidden md:flex shrink-0">
+            <div>
+                <div class="flex items-center space-x-3 mb-8">
+                    <span class="text-3xl">🎓</span>
+                    <h1 class="text-xl font-bold text-primary leading-tight">Pro Marks<br>Tracker</h1>
+                </div>
+                
+                <div class="space-y-1">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">System Controls</p>
+                    <button onclick="logout()" class="w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-danger transition-colors text-left text-sm font-medium">
+                        <i class="fa-solid fa-power-off"></i>
+                        <span>Lock Tracker</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="text-xs text-slate-400 text-center">
+                <p>Cloud Sync Active <i class="fa-solid fa-cloud text-success ml-1"></i></p>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 p-4 md:p-8 overflow-y-auto">
+            
+            <!-- Mobile Header -->
+            <div class="md:hidden flex items-center justify-between bg-white p-4 rounded-xl shadow-sm mb-6 border border-slate-200">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl">🎓</span>
+                    <h1 class="text-lg font-bold text-primary">Pro Marks Tracker</h1>
+                </div>
+                <button onclick="logout()" class="text-slate-500 hover:text-danger">
+                    <i class="fa-solid fa-power-off text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Subject Selector -->
+            <div class="mb-8 fade-in">
+                <label for="subject-select" class="block text-sm font-medium text-slate-700 mb-2">Select Module</label>
+                <div class="relative">
+                    <select id="subject-select" class="block w-full pl-4 pr-10 py-3 text-base border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-lg rounded-xl shadow-sm appearance-none bg-white font-semibold text-slate-800 border">
+                        <!-- Options populated via JS -->
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div id="hurdle-warning" class="hidden mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg shadow-sm fade-in">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fa-solid fa-triangle-exclamation text-red-500"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-red-700">
+                            <strong>Hurdle Requirement Active:</strong> You must score &ge; 40/100 on the Final Examination to pass this unit, regardless of your overall total.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 fade-in">
+                <!-- Metric Card 1 -->
+                <div class="glass-card rounded-xl p-5 border-t-4 border-t-success">
+                    <p class="text-sm font-medium text-slate-500 mb-1">Marks Earned</p>
+                    <div class="flex items-baseline space-x-2">
+                        <h3 id="metric-earned" class="text-2xl font-bold text-slate-800">0.00</h3>
+                        <span class="text-sm text-slate-500">/ 100</span>
+                    </div>
+                </div>
+                <!-- Metric Card 2 -->
+                <div class="glass-card rounded-xl p-5 border-t-4 border-t-blue-500">
+                    <p class="text-sm font-medium text-slate-500 mb-1">Max Possible Grade</p>
+                    <h3 id="metric-max" class="text-2xl font-bold text-slate-800">100.00%</h3>
+                    <p id="metric-lost" class="text-xs font-medium text-danger mt-1">-0.00% lost so far</p>
+                </div>
+                <!-- Metric Card 3 -->
+                <div class="glass-card rounded-xl p-5 border-t-4 border-t-amber-500">
+                    <p class="text-sm font-medium text-slate-500 mb-1">Pass Status (50%)</p>
+                    <h3 id="metric-pass" class="text-lg font-bold text-slate-800 leading-tight mt-1">Need 50.00 more</h3>
+                </div>
+                <!-- Metric Card 4 -->
+                <div class="glass-card rounded-xl p-5 border-t-4 border-t-purple-500">
+                    <p class="text-sm font-medium text-slate-500 mb-1">Avg Required on Rest</p>
+                    <h3 id="metric-avg" class="text-2xl font-bold text-slate-800">50.0%</h3>
+                </div>
+            </div>
+
+            <!-- Main Interactive Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8 fade-in">
+                
+                <!-- Table (Left 2/3) -->
+                <div class="lg:col-span-2 glass-card rounded-xl border border-slate-200 overflow-hidden flex flex-col h-full shadow-sm">
+                    <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
+                        <h2 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-list-check mr-2 text-primary"></i> Assessment Rubric</h2>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-slate-600">
+                            <thead class="text-xs text-slate-500 uppercase bg-slate-50">
+                                <tr>
+                                    <th class="px-6 py-3 font-semibold">Assessment</th>
+                                    <th class="px-6 py-3 font-semibold">Status</th>
+                                    <th class="px-6 py-3 font-semibold text-right">Weight</th>
+                                    <th class="px-6 py-3 font-semibold text-right">Score</th>
+                                    <th class="px-6 py-3 font-semibold text-right">Earned</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rubric-table-body" class="divide-y divide-slate-200">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Input Form (Right 1/3) -->
+                <div class="glass-card rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col h-full">
+                    <h2 class="text-lg font-bold text-slate-800 mb-5"><i class="fa-solid fa-pen-to-square mr-2 text-primary"></i> Update Grades</h2>
+                    
+                    <form id="update-form" class="space-y-5 flex-1">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">1. Pick Assessment</label>
+                            <select id="assessment-select" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm bg-white shadow-sm">
+                                <!-- Populated by JS -->
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">2. Set Status</label>
+                            <select id="status-select" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm bg-white shadow-sm">
+                                <option value="⚪ Pending">⚪ Pending</option>
+                                <option value="🟡 Submitted">🟡 Submitted</option>
+                                <option value="🟢 Graded">🟢 Graded</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">3. Enter Score (/100)</label>
+                            <input type="number" id="score-input" min="0" max="100" step="0.1" value="0" disabled class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm bg-slate-100 cursor-not-allowed shadow-sm transition-colors">
+                        </div>
+
+                        <div class="pt-4 mt-auto">
+                            <button type="submit" class="w-full bg-primary hover:bg-blue-900 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-sm flex justify-center items-center">
+                                <i class="fa-solid fa-floppy-disk mr-2"></i> Save Update
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Visualization Area -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 fade-in">
+                <!-- Donut Chart -->
+                <div class="glass-card rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col items-center justify-center">
+                    <h2 class="text-lg font-bold text-slate-800 self-start w-full mb-4 border-b pb-2"><i class="fa-solid fa-chart-pie mr-2 text-primary"></i> Overall Grade Breakdown</h2>
+                    <div class="relative w-full max-w-[250px] aspect-square">
+                        <canvas id="donutChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Grade Trajectory -->
+                <div class="glass-card rounded-xl border border-slate-200 p-6 shadow-sm">
+                    <h2 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2"><i class="fa-solid fa-route mr-2 text-primary"></i> Grade Trajectory</h2>
+                    
+                    <div id="trajectory-message" class="p-4 rounded-lg bg-slate-50 border border-slate-200 mb-4 flex items-start space-x-3">
+                        <!-- Content updated by JS -->
+                    </div>
+                    
+                    <div class="space-y-3 mt-6">
+                        <p class="text-sm font-semibold text-slate-600 mb-2">Mathematical Possibilities:</p>
+                        <div id="possibilities-list" class="space-y-2 text-sm text-slate-500">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script type="module">
+        // Firebase Setup
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Environment variables provided by system
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'pro-marks-tracker-v1';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            // Mock config to prevent crashes if run outside environment
+            apiKey: "mock", authDomain: "mock", projectId: "mock"
+        };
+        const initialToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app, auth, db, userId;
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+        } catch (e) {
+            console.error("Firebase initialization failed:", e);
+        }
+
+        // --- APPLICATION DATA STRUCTURE ---
+        const DEFAULT_DATA = {
+            "BET306 Design of Concrete Structures 2": [
+                { assessment: "Tutorial 1", weight: 4.0, score: 0.0, status: "⚪ Pending" },
+                { assessment: "Tutorial 2", weight: 4.0, score: 0.0, status: "⚪ Pending" },
+                { assessment: "Tutorial 3", weight: 4.0, score: 0.0, status: "⚪ Pending" },
+                { assessment: "Tutorial 4", weight: 4.0, score: 0.0, status: "⚪ Pending" },
+                { assessment: "Tutorial 5", weight: 4.0, score: 0.0, status: "⚪ Pending" },
+                { assessment: "Tutorial 6", weight: 5.0, score: 0.0, status: "⚪ Pending" },
+                { assessment: "Mid-semester Test", weight: 15.0, score: 0.0, status: "⚪ Pending" },
+                { assessment: "Assignment", weight: 20.0, score: 0.0, status: "⚪ Pending" },
+                { assessment: "Final Exam", weight: 40.0, score: 0.0, status: "⚪ Pending" }
+            ],
+            "BET307 Design of Steel Structures 2": [
+                { assessment: "Tutorial 1", weight: 4.0, score: 0.0, status: "⚪ Pending" },
+                { assessment: "Tutorial 2", weight: 4.0, score: 0.0, status: "⚪ Pending" },
+                { assessment: "Tutorial 3", weight: 4.0, score: 0.0, status: "⚪ Pending" },
+                { assessment: "Space GASS Assignment", weight: 15.0, score: 0.0, status: "⚪ Pending" },
+                { assessment: "Tutorial 4", weight: 5.0, score: 0.0, status: "⚪ Pending" },
+                { assessment: "Tutorial 5", weight: 4.0, score: 0.0, status: "⚪ Pending" },
+                { assessment: "Project", weight: 20.0, score: 0.0, status: "⚪ Pending" },
+                { assessment: "Tutorial 6", weight: 4.0, score: 0.0, status: "⚪ Pending" },
+                { assessment: "Final Exam", weight: 40.0, score: 0.0, status: "⚪ Pending" }
+            ],
+            "BET401 Geotechnical Engineering 2": [
+                { assessment: "AT 1: Assignment", weight: 10.0, score: 0.0, status: "⚪ Pending" },
+                { assessment: "AT 2: Assignment", weight: 25.0, score: 0.0, status: "⚪ Pending" },
+                { assessment: "AT 3: Report & Presentation", weight: 25.0, score: 0.0, status: "⚪ Pending" },
+                { assessment: "Final Examination", weight: 40.0, score: 0.0, status: "⚪ Pending" }
+            ],
+            "BET410 Work Integrated Learning": [
+                { assessment: "Placement Logbook", weight: 50.0, score: 0.0, status: "⚪ Pending" },
+                { assessment: "Supervisor Evaluation", weight: 50.0, score: 0.0, status: "⚪ Pending" }
+            ]
+        };
+
+        // --- APP STATE ---
+        let state = {
+            grades: JSON.parse(JSON.stringify(DEFAULT_DATA)), // Deep copy
+            currentSubject: "BET306 Design of Concrete Structures 2",
+            chartInstance: null
+        };
+
+        async function initAuthAndData() {
+            if (!auth) return;
+            
+            try {
+                if (initialToken) {
+                    await signInWithCustomToken(auth, initialToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                
+                userId = auth.currentUser?.uid;
+                if (!userId) throw new Error("No user ID available after auth.");
+                
+                console.log("Authenticated. Loading data...");
+                await loadDataFromFirebase();
+                
+            } catch (error) {
+                console.error("Auth/Data loading error:", error);
+            }
+        }
+
+        async function loadDataFromFirebase() {
+            if (!userId) return;
+            // RULE 1: STRICT PATH FOR PRIVATE DATA
+            const docRef = doc(db, 'artifacts', appId, 'users', userId, 'marks_tracker', 'grades');
+            try {
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    // Merge existing data with defaults in case new subjects were added
+                    for (const subject in DEFAULT_DATA) {
+                        if (data[subject]) {
+                            state.grades[subject] = data[subject];
+                        }
+                    }
+                }
+                updateDashboard();
+            } catch (error) {
+                console.error("Error loading data:", error);
+            }
+        }
+
+        async function saveDataToFirebase() {
+            if (!userId) return;
+            const docRef = doc(db, 'artifacts', appId, 'users', userId, 'marks_tracker', 'grades');
+            try {
+                await setDoc(docRef, state.grades);
+                console.log("Data saved successfully.");
+            } catch (error) {
+                console.error("Error saving data:", error);
+            }
+        }
+
+        function populateSubjectSelect() {
+            const select = document.getElementById('subject-select');
+            select.innerHTML = '';
+            Object.keys(state.grades).forEach(subject => {
+                const option = document.createElement('option');
+                option.value = subject;
+                option.textContent = subject;
+                if (subject === state.currentSubject) option.selected = true;
+                select.appendChild(option);
+            });
+        }
+
+        function populateAssessmentSelect(subjectData) {
+            const select = document.getElementById('assessment-select');
+            select.innerHTML = '';
+            subjectData.forEach((item, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = item.assessment;
+                select.appendChild(option);
+            });
+            handleAssessmentChange(); // trigger form update
+        }
+
+        function renderTable(subjectData) {
+            const tbody = document.getElementById('rubric-table-body');
+            tbody.innerHTML = '';
+
+            subjectData.forEach(item => {
+                const earned = item.status === '🟢 Graded' ? (item.weight / 100) * item.score : 0.0;
+                
+                // Color coding for status
+                let statusBadge = '';
+                if(item.status === '🟢 Graded') statusBadge = 'text-success bg-green-50 font-medium px-2 py-1 rounded-md border border-green-100';
+                else if(item.status === '🟡 Submitted') statusBadge = 'text-amber-600 bg-amber-50 font-medium px-2 py-1 rounded-md border border-amber-100';
+                else statusBadge = 'text-slate-500 bg-slate-100 px-2 py-1 rounded-md border border-slate-200';
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 transition-colors';
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-medium text-slate-800">${item.assessment}</td>
+                    <td class="px-6 py-4 whitespace-nowrap"><span class="${statusBadge} text-xs">${item.status}</span></td>
+                    <td class="px-6 py-4 text-right">${item.weight.toFixed(1)}%</td>
+                    <td class="px-6 py-4 text-right">${item.score.toFixed(1)} / 100</td>
+                    <td class="px-6 py-4 text-right font-semibold ${earned > 0 ? 'text-primary' : 'text-slate-400'}">${earned.toFixed(2)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function calculateMetrics(subjectData) {
+            let totalWeight = 0, gradedWeight = 0, submittedWeight = 0, pendingWeight = 0;
+            let currentEarned = 0;
+
+            subjectData.forEach(item => {
+                totalWeight += item.weight;
+                if (item.status === '🟢 Graded') {
+                    gradedWeight += item.weight;
+                    currentEarned += (item.weight / 100) * item.score;
+                } else if (item.status === '🟡 Submitted') {
+                    submittedWeight += item.weight;
+                } else {
+                    pendingWeight += item.weight;
+                }
+            });
+
+            const maxPossibleTotal = currentEarned + submittedWeight + pendingWeight;
+            const marksLost = gradedWeight - currentEarned;
+            const marksToPass = Math.max(0.0, 50.0 - currentEarned);
+            const unknownWeight = submittedWeight + pendingWeight;
+            
+            let avgNeeded = "N/A";
+            if (unknownWeight > 0 && marksToPass > 0) {
+                avgNeeded = ((marksToPass / unknownWeight) * 100).toFixed(1) + "%";
+            } else if (marksToPass <= 0) {
+                avgNeeded = "0.0%"; // Already passed
+            }
+
+            return {
+                currentEarned, maxPossibleTotal, marksLost, marksToPass, unknownWeight, avgNeeded
+            };
+        }
+
+        function renderInsights(metrics) {
+            document.getElementById('metric-earned').textContent = metrics.currentEarned.toFixed(2);
+            document.getElementById('metric-max').textContent = metrics.maxPossibleTotal.toFixed(2) + '%';
+            document.getElementById('metric-lost').textContent = `-${metrics.marksLost.toFixed(2)}% lost so far`;
+            
+            const passEl = document.getElementById('metric-pass');
+            if (metrics.currentEarned >= 50) {
+                passEl.innerHTML = '<span class="text-success">Pass Secured! 🎉</span>';
+            } else if (metrics.maxPossibleTotal < 50) {
+                passEl.innerHTML = '<span class="text-danger">Mathematical Fail ⚠️</span>';
+            } else {
+                passEl.textContent = `Need ${metrics.marksToPass.toFixed(2)} more`;
+            }
+
+            document.getElementById('metric-avg').textContent = metrics.avgNeeded;
+        }
+
+        function renderTrajectory(metrics) {
+            const msgBox = document.getElementById('trajectory-message');
+            const list = document.getElementById('possibilities-list');
+            
+            // Primary Message
+            if (metrics.currentEarned >= 80) {
+                msgBox.innerHTML = '<div class="text-2xl">🏆</div><div><p class="font-bold text-slate-800">High Distinction (HD)!</p><p class="text-sm text-slate-600">You have secured top marks.</p></div>';
+            } else if (metrics.currentEarned >= 70) {
+                msgBox.innerHTML = '<div class="text-2xl">🏅</div><div><p class="font-bold text-slate-800">Distinction (D)!</p><p class="text-sm text-slate-600">Great job securing a distinction.</p></div>';
+            } else if (metrics.currentEarned >= 60) {
+                msgBox.innerHTML = '<div class="text-2xl">📘</div><div><p class="font-bold text-slate-800">Credit (C)!</p><p class="text-sm text-slate-600">You have successfully secured a credit.</p></div>';
+            } else if (metrics.currentEarned >= 50) {
+                msgBox.innerHTML = '<div class="text-2xl">📗</div><div><p class="font-bold text-slate-800">Pass (P)!</p><p class="text-sm text-slate-600">You have passed this unit.</p></div>';
+            } else {
+                msgBox.innerHTML = '<div class="text-2xl">📝</div><div><p class="font-bold text-slate-800">Work in Progress</p><p class="text-sm text-slate-600">Complete and grade more assessments to secure a pass.</p></div>';
+            }
+
+            // Possibilities
+            let possibilitiesHtml = '';
+            if (metrics.maxPossibleTotal >= 80) possibilitiesHtml += '<div class="flex items-center"><i class="fa-solid fa-arrow-right text-slate-400 mr-2 text-xs"></i> High Distinction is still mathematically possible.</div>';
+            else if (metrics.maxPossibleTotal >= 70) possibilitiesHtml += '<div class="flex items-center"><i class="fa-solid fa-arrow-right text-slate-400 mr-2 text-xs"></i> Distinction is still mathematically possible.</div>';
+            else if (metrics.maxPossibleTotal >= 60) possibilitiesHtml += '<div class="flex items-center"><i class="fa-solid fa-arrow-right text-slate-400 mr-2 text-xs"></i> Credit is still mathematically possible.</div>';
+            else if (metrics.maxPossibleTotal >= 50) possibilitiesHtml += '<div class="flex items-center"><i class="fa-solid fa-arrow-right text-slate-400 mr-2 text-xs"></i> Pass is still mathematically possible.</div>';
+            else possibilitiesHtml += '<div class="text-danger"><i class="fa-solid fa-xmark mr-2 text-xs"></i> Cannot reach 50% passing grade.</div>';
+            
+            list.innerHTML = possibilitiesHtml || '<div class="italic text-slate-400">Final grade secured.</div>';
+        }
+
+        function renderChart(metrics) {
+            const ctx = document.getElementById('donutChart').getContext('2d');
+            
+            // Prepare data, filtering out zeros for a cleaner chart
+            const rawData = [
+                { label: 'Marks Earned', value: metrics.currentEarned, color: '#22c55e' },
+                { label: 'Marks Lost', value: metrics.marksLost, color: '#ef4444' },
+                { label: 'Unknown', value: metrics.unknownWeight, color: '#94a3b8' }
+            ].filter(item => item.value > 0);
+
+            if (state.chartInstance) {
+                state.chartInstance.destroy();
+            }
+
+            state.chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: rawData.map(d => d.label),
+                    datasets: [{
+                        data: rawData.map(d => d.value),
+                        backgroundColor: rawData.map(d => d.color),
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ' ' + context.label + ': ' + context.raw.toFixed(2);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateDashboard() {
+            const subjectData = state.grades[state.currentSubject];
+            
+            // Hurdle check
+            const hurdleEl = document.getElementById('hurdle-warning');
+            if (state.currentSubject === "BET401 Geotechnical Engineering 2") {
+                hurdleEl.classList.remove('hidden');
+            } else {
+                hurdleEl.classList.add('hidden');
+            }
+
+            renderTable(subjectData);
+            populateAssessmentSelect(subjectData);
+            
+            const metrics = calculateMetrics(subjectData);
+            renderInsights(metrics);
+            renderTrajectory(metrics);
+            renderChart(metrics);
+        }
+
+        // Login Logic
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const input = document.getElementById('passcode-input').value;
+            if (input === 'engineer') {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('app-container').classList.remove('hidden');
+                initAuthAndData(); // Authenticate with Firebase once "unlocked"
+            } else {
+                const err = document.getElementById('login-error');
+                err.classList.remove('hidden');
+                // Shake effect
+                const form = document.getElementById('login-form');
+                form.style.transform = 'translateX(-10px)';
+                setTimeout(() => form.style.transform = 'translateX(10px)', 100);
+                setTimeout(() => form.style.transform = 'translateX(-10px)', 200);
+                setTimeout(() => form.style.transform = 'translateX(0)', 300);
+            }
+        });
+
+        // Subject Change
+        document.getElementById('subject-select').addEventListener('change', (e) => {
+            state.currentSubject = e.target.value;
+            updateDashboard();
+        });
+
+        // Form Inputs logic (Enabling/disabling score)
+        const statusSelect = document.getElementById('status-select');
+        const scoreInput = document.getElementById('score-input');
+        const assessmentSelect = document.getElementById('assessment-select');
+
+        function handleAssessmentChange() {
+            const index = assessmentSelect.value;
+            if (index === '') return;
+            const item = state.grades[state.currentSubject][index];
+            statusSelect.value = item.status;
+            scoreInput.value = item.score;
+            scoreInput.disabled = (item.status !== '🟢 Graded');
+            if(scoreInput.disabled) {
+                scoreInput.classList.add('bg-slate-100', 'cursor-not-allowed');
+                scoreInput.classList.remove('bg-white');
+            } else {
+                scoreInput.classList.remove('bg-slate-100', 'cursor-not-allowed');
+                scoreInput.classList.add('bg-white');
+            }
+        }
+
+        assessmentSelect.addEventListener('change', handleAssessmentChange);
+        
+        statusSelect.addEventListener('change', (e) => {
+            if (e.target.value === '🟢 Graded') {
+                scoreInput.disabled = false;
+                scoreInput.classList.remove('bg-slate-100', 'cursor-not-allowed');
+                scoreInput.classList.add('bg-white');
+            } else {
+                scoreInput.disabled = true;
+                scoreInput.classList.add('bg-slate-100', 'cursor-not-allowed');
+                scoreInput.classList.remove('bg-white');
+                scoreInput.value = 0; // Reset visual to 0 to avoid ghost math
+            }
+        });
+
+        // Form Submit (Save Update)
+        document.getElementById('update-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const index = assessmentSelect.value;
+            const newStatus = statusSelect.value;
+            const newScore = parseFloat(scoreInput.value) || 0;
+
+            if (index !== '') {
+                state.grades[state.currentSubject][index].status = newStatus;
+                // Avoid ghost math: only save score if graded
+                state.grades[state.currentSubject][index].score = (newStatus === '🟢 Graded') ? newScore : 0.0;
+                
+                updateDashboard();
+                saveDataToFirebase();
+                
+                // Show brief success feedback on button
+                const btn = e.target.querySelector('button');
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check mr-2"></i> Saved!';
+                btn.classList.replace('bg-primary', 'bg-success');
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.replace('bg-success', 'bg-primary');
+                }, 1500);
+            }
+        });
+
+        // Global functions for inline HTML event handlers
+        window.logout = function() {
+            document.getElementById('app-container').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('passcode-input').value = '';
+            document.getElementById('login-error').classList.add('hidden');
+        };
+
+        // Initialize UI Base
+        populateSubjectSelect();
+        // Wait for login to initAuth and updateDashboard.
+
+    </script>
+</body>
+</html>
