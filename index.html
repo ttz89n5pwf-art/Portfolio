@@ -1,10 +1,210 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <title>Adarsha Dhakal</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Adarsha — Civil Engineering Technology</title>
+<meta name="description" content="Portfolio of Adarsha, Civil Engineering Technology student at Melbourne Polytechnic. Structural and geotechnical coursework, plus Groomio e-commerce venture." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Expanded:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Adarsha Dhakal</h1>
-    <p>Portfolio coming soon.</p>
+
+<div class="sheet-border" aria-hidden="true"></div>
+
+<header class="titleblock">
+  <div class="titleblock__left">
+    <span class="titleblock__name">ADARSHA</span>
+    <span class="titleblock__role">Civil Engineering Technology</span>
+  </div>
+  <nav class="titleblock__nav" aria-label="Primary">
+    <a href="#about">About</a>
+    <a href="#projects">Projects</a>
+    <a href="#ventures">Ventures</a>
+    <a href="#skills">Skills</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<main>
+
+  <section class="hero" id="top">
+    <div class="hero__text">
+      <p class="hero__eyebrow">Sheet 01 — General Arrangement</p>
+      <h1>Building things that carry load, and businesses that carry themselves.</h1>
+      <p class="hero__lede">Bachelor of Engineering Technology (Civil) candidate at Melbourne Polytechnic, working across structural and geotechnical design to AS 3600 and AS 4100 — and running an e-commerce venture on the side.</p>
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="#projects">View coursework</a>
+        <a class="btn btn--ghost" href="#contact">Get in touch</a>
+      </div>
+    </div>
+    <div class="hero__diagram">
+      <svg viewBox="0 0 520 420" class="bridge-svg" role="img" aria-label="Annotated diagram of a post-tensioned bridge cross-section">
+        <!-- deck -->
+        <path class="draw" d="M 60 180 L 460 180 L 460 220 L 60 220 Z" />
+        <!-- pier -->
+        <path class="draw" d="M 220 220 L 220 340 L 300 340 L 300 220" />
+        <!-- footing -->
+        <path class="draw" d="M 180 340 L 340 340 L 340 370 L 180 370 Z" />
+        <!-- tendon profile -->
+        <path class="draw draw--accent" d="M 80 210 Q 260 260 440 210" />
+        <!-- ground hatching -->
+        <line class="hatch" x1="150" y1="370" x2="170" y2="390" />
+        <line class="hatch" x1="180" y1="370" x2="200" y2="390" />
+        <line class="hatch" x1="210" y1="370" x2="230" y2="390" />
+        <line class="hatch" x1="240" y1="370" x2="260" y2="390" />
+        <line class="hatch" x1="270" y1="370" x2="290" y2="390" />
+        <line class="hatch" x1="300" y1="370" x2="320" y2="390" />
+        <line class="hatch" x1="330" y1="370" x2="350" y2="390" />
+        <line class="ground" x1="120" y1="370" x2="400" y2="370" />
+        <!-- leaders + labels -->
+        <line class="leader" x1="440" y1="210" x2="480" y2="150" />
+        <text class="ann" x="484" y="148">Tendon, 3 cables</text>
+        <line class="leader" x1="150" y1="200" x2="90" y2="120" />
+        <text class="ann" x="20" y="112">Deck, 22 m span</text>
+        <line class="leader" x1="260" y1="280" x2="340" y2="280" />
+        <text class="ann" x="344" y="284">Pier</text>
+        <line class="leader" x1="260" y1="355" x2="60" y2="355" />
+        <text class="ann" x="0" y="359">Footing</text>
+        <text class="scale" x="40" y="410">SCALE N.T.S.</text>
+      </svg>
+    </div>
+  </section>
+
+  <section class="about" id="about">
+    <div class="section-head">
+      <span class="section-num">02</span>
+      <h2>About</h2>
+    </div>
+    <div class="about__body">
+      <p>I'm studying towards a Bachelor of Engineering Technology (Civil) at Melbourne Polytechnic, based in Melbourne, Australia. My coursework spans structural design in reinforced concrete and steel, geotechnical foundation design, and prestressed concrete — the kind of work that sits behind bridges, buildings, and the ground they stand on.</p>
+      <p>Alongside my studies I run Groomio, a Shopify e-commerce venture — which has taught me a different kind of problem-solving: reading data, testing quickly, and making decisions with incomplete information. I like that the two pull in different directions and sharpen each other.</p>
+    </div>
+  </section>
+
+  <section class="projects" id="projects">
+    <div class="section-head">
+      <span class="section-num">03</span>
+      <h2>Projects</h2>
+    </div>
+
+    <article class="drawing-sheet">
+      <div class="drawing-sheet__block">
+        <span>SHEET</span><strong>03.1</strong>
+        <span>DISCIPLINE</span><strong>Structural — Prestressed Concrete</strong>
+        <span>CODE</span><strong>AS 3600</strong>
+      </div>
+      <div class="drawing-sheet__body">
+        <h3>Loss of Prestress — Post-Tensioned Pedestrian Bridge</h3>
+        <p>A 22 m simply supported post-tensioned pedestrian bridge in Hobart, analysed across three horizontal tendons. The assignment works through immediate and time-dependent prestress losses over a 10-year service life — elastic shortening, friction, anchorage draw-in, and long-term shrinkage, creep and relaxation — following the AS 3600 method.</p>
+        <ul class="tags">
+          <li>AS 3600</li>
+          <li>Prestress losses</li>
+          <li>Section analysis</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="drawing-sheet">
+      <div class="drawing-sheet__block">
+        <span>SHEET</span><strong>03.2</strong>
+        <span>DISCIPLINE</span><strong>Geotechnical</strong>
+        <span>UNIT</span><strong>BET401</strong>
+      </div>
+      <div class="drawing-sheet__body">
+        <h3>Shallow Foundation Design &amp; Assessment</h3>
+        <p>Design and assessment of a shallow foundation as part of Geotechnical Engineering 2 — working through bearing capacity theory and foundation sizing against serviceability and ultimate limit states.</p>
+        <ul class="tags">
+          <li>Bearing capacity</li>
+          <li>Foundation design</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="drawing-sheet">
+      <div class="drawing-sheet__block">
+        <span>SHEET</span><strong>03.3</strong>
+        <span>DISCIPLINE</span><strong>Structural — RC &amp; Steel</strong>
+        <span>CODE</span><strong>AS 3600 / AS 4100</strong>
+      </div>
+      <div class="drawing-sheet__body">
+        <h3>Structural Design Portfolio</h3>
+        <p>A run of structural design work across reinforced concrete and steel: RC beam design for flexure and shear, RC two-way slabs, column interaction diagrams, steel beam design to AS 4100 including lateral-torsional buckling checks, a tapered welded I-beam capacity assignment, and multi-storey frame analysis using the stiffness matrix method.</p>
+        <ul class="tags">
+          <li>RC design</li>
+          <li>Steel design</li>
+          <li>Frame analysis</li>
+        </ul>
+      </div>
+    </article>
+  </section>
+
+  <section class="ventures" id="ventures">
+    <div class="section-head">
+      <span class="section-num">04</span>
+      <h2>Ventures</h2>
+    </div>
+    <article class="venture-card">
+      <div class="venture-card__text">
+        <h3>Groomio</h3>
+        <p class="venture-card__tagline">Shopify e-commerce, built end to end</p>
+        <p>Groomio is a Shopify dropshipping business selling a beard apron to the US market, run out of Australia. I built the Meta advertising strategy from the ground up — funnel structure, campaign architecture, and a steady stream of ad creative — alongside store optimisation for currency, reviews, and checkout.</p>
+        <ul class="tags">
+          <li>Shopify</li>
+          <li>Meta Ads</li>
+          <li>E-commerce ops</li>
+        </ul>
+      </div>
+      <a class="venture-card__link" href="https://groomio.pro" target="_blank" rel="noopener">groomio.pro ↗</a>
+    </article>
+  </section>
+
+  <section class="skills" id="skills">
+    <div class="section-head">
+      <span class="section-num">05</span>
+      <h2>Skills</h2>
+    </div>
+    <div class="skills__grid">
+      <div class="skills__group">
+        <h3>Structural &amp; Geotechnical</h3>
+        <p>AS 3600 reinforced concrete design · AS 4100 steel design · Prestressed concrete analysis · Bearing capacity &amp; foundation design · Stiffness &amp; force method frame analysis</p>
+      </div>
+      <div class="skills__group">
+        <h3>E-commerce &amp; Marketing</h3>
+        <p>Shopify store operations · Meta Ads campaign strategy · Ad creative development · Funnel design</p>
+      </div>
+      <div class="skills__group">
+        <h3>Tools &amp; Practice</h3>
+        <p>Technical documentation · Code-compliant calculation · Data-informed decision making</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="section-head">
+      <span class="section-num">06</span>
+      <h2>Contact</h2>
+    </div>
+    <div class="contact__body">
+      <p>Open to internship and graduate opportunities in structural or geotechnical engineering.</p>
+      <div class="contact__links">
+        <a href="mailto:your.email@example.com">your.email@example.com</a>
+        <a href="https://linkedin.com/in/your-profile" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a href="https://groomio.pro" target="_blank" rel="noopener">groomio.pro ↗</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="titleblock titleblock--footer">
+  <span>REV. 01</span>
+  <span>DRAWN — ADARSHA</span>
+  <span id="footer-date"></span>
+</footer>
+
+<script src="script.js"></script>
 </body>
 </html>
