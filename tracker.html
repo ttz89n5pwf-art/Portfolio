@@ -346,16 +346,13 @@
             if (!auth) return;
             
             try {
-                if (initialToken) {
-                    await signInWithCustomToken(auth, initialToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
+                // Sign in anonymously to connect to Firebase
+                await signInAnonymously(auth);
+
+                // Use one fixed ID so all browsers share the exact same grades
+                userId = "main_user";
                 
-                userId = auth.currentUser?.uid;
-                if (!userId) throw new Error("No user ID available after auth.");
-                
-                console.log("Authenticated. Loading data...");
+                console.log("Connected to cloud storage. Loading data...");
                 await loadDataFromFirebase();
                 
             } catch (error) {
