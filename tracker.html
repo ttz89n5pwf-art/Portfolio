@@ -280,10 +280,14 @@
 
         // Environment variables provided by system
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'pro-marks-tracker-v1';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            // Mock config to prevent crashes if run outside environment
-            apiKey: "mock", authDomain: "mock", projectId: "mock"
-        };
+       const firebaseConfig = {
+    apiKey: "AIzaSyBiBaT5CfQwdRoJOT61Liz09oHedxj5iU4",
+    authDomain: "marks-tracker-6bfe8.firebaseapp.com",
+    projectId: "marks-tracker-6bfe8",
+    storageBucket: "marks-tracker-6bfe8.firebasestorage.app",
+    messagingSenderId: "638442053034",
+    appId: "1:638442053034:web:c0a6388baea0f22099dfd3"
+};
         const initialToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         let app, auth, db, userId;
