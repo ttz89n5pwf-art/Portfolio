@@ -3,229 +3,313 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adarsha Dhakal | Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Adarsha Dhakal | Digital Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-dark: #0f172a;
-            --card-dark: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent: #38bdf8;
-            --accent-gradient: linear-gradient(90deg, #38bdf8, #818cf8);
+            --bg-color: #050814;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.05);
+            --text-main: #ffffff;
+            --text-muted: #8b949e;
+            --accent: #00f0ff;
+            --accent-2: #7000ff;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Space Grotesk', sans-serif;
             scroll-behavior: smooth;
         }
 
         body {
-            background-color: var(--bg-dark);
+            background-color: var(--bg-color);
             color: var(--text-main);
-            line-height: 1.7;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(112, 0, 255, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(0, 240, 255, 0.08), transparent 25%);
         }
 
-        /* Hero Section */
-        header {
-            min-height: 80vh;
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(5, 8, 20, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        nav .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        #home {
+            height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 2rem;
-            animation: fadeIn 1.5s ease-out;
+            padding: 0 10%;
+            position: relative;
         }
 
-        header h1 {
-            font-size: 4rem;
-            font-weight: 700;
+        .hero-content h1 {
+            font-size: clamp(3rem, 8vw, 5rem);
+            line-height: 1.1;
             margin-bottom: 1rem;
-            background: var(--accent-gradient);
+            background: linear-gradient(to right, var(--text-main), var(--text-muted));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        header p {
-            font-size: 1.5rem;
-            color: var(--text-muted);
-            max-width: 600px;
-        }
-
-        /* Container & Sections */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 2rem;
+        .typing-container {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: var(--accent);
+            margin-bottom: 2rem;
+            height: 40px;
         }
 
         section {
-            padding: 5rem 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 100px 10%;
         }
 
-        h2 {
+        .section-title {
             font-size: 2.5rem;
-            margin-bottom: 2rem;
-            display: inline-block;
-            position: relative;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
-        h2::after {
-            content: '';
-            position: absolute;
-            width: 50%;
-            height: 4px;
-            background: var(--accent-gradient);
-            bottom: -5px;
-            left: 0;
-            border-radius: 2px;
+        .section-title::after {
+            content: "";
+            height: 1px;
+            flex: 1;
+            background: linear-gradient(to right, var(--glass-border), transparent);
         }
 
         p {
             color: var(--text-muted);
             font-size: 1.1rem;
+            line-height: 1.8;
+            max-width: 800px;
         }
 
-        /* Projects Grid */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            margin-top: 2rem;
         }
 
-        .card {
-            background-color: var(--card-dark);
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+        .glass-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            backdrop-filter: blur(10px);
+            transition: transform 0.4s, border-color 0.4s;
         }
 
-        .card:hover {
+        .glass-card:hover {
             transform: translateY(-10px);
             border-color: var(--accent);
-            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.15);
+            background: rgba(255, 255, 255, 0.05);
         }
 
-        .card h3 {
-            font-size: 1.4rem;
-            color: var(--text-main);
+        .glass-card i {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .glass-card h3 {
+            font-size: 1.5rem;
             margin-bottom: 1rem;
         }
 
-        /* Skills Tags */
-        .skills-list {
+        .skills-container {
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
-            list-style: none;
-            margin-top: 1.5rem;
+            margin-top: 2rem;
         }
 
-        .skills-list li {
-            background: rgba(56, 189, 248, 0.1);
-            color: var(--accent);
-            padding: 0.5rem 1.2rem;
+        .skill-tag {
+            padding: 0.6rem 1.5rem;
+            background: transparent;
+            border: 1px solid var(--accent-2);
             border-radius: 30px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            transition: all 0.3s ease;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            transition: all 0.3s;
         }
 
-        .skills-list li:hover {
-            background: var(--accent);
-            color: var(--bg-dark);
+        .skill-tag:hover {
+            background: var(--accent-2);
+            box-shadow: 0 0 15px rgba(112, 0, 255, 0.4);
         }
 
-        /* Footer */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         footer {
             text-align: center;
             padding: 3rem;
-            background-color: var(--card-dark);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .btn {
-            display: inline-block;
-            margin-top: 1rem;
-            padding: 0.8rem 2rem;
-            background: var(--accent-gradient);
-            color: white;
-            text-decoration: none;
-            border-radius: 30px;
-            font-weight: 600;
-            transition: opacity 0.3s ease;
-        }
-
-        .btn:hover {
-            opacity: 0.8;
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-muted);
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Adarsha Dhakal</h1>
-        <p>Structural Engineering & Digital Development</p>
-    </header>
+    <nav>
+        <div class="logo">AD.</div>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#projects">Work</a></li>
+        </ul>
+    </nav>
 
-    <div class="container">
-        <section id="about">
-            <h2>About Me</h2>
-            <p>I am an engineering student at La Trobe University with a deep passion for digital commerce and web technologies. I specialize in bridging the gap between analytical design and interactive digital experiences. By combining my understanding of complex structural mechanics (AS 3600, AS 4100) with front-end code, I build highly functional, data-driven tools and clean user interfaces.</p>
-        </section>
-
-        <section id="projects">
-            <h2>Featured Work</h2>
-            <div class="grid">
-                <div class="card">
-                    <h3>Structural Visualizer</h3>
-                    <p>An interactive web application leveraging HTML5 Canvas and JavaScript to dynamically plot shear force and bending moment diagrams for precise beam analysis.</p>
-                </div>
-                <div class="card">
-                    <h3>Academic Dashboard</h3>
-                    <p>A custom tracking dashboard engineered to monitor, calculate, and visualize weighted assessments and final grades for complex university modules.</p>
-                </div>
-                <div class="card">
-                    <h3>E-Commerce & Digital Ads</h3>
-                    <p>Designed and optimized Shopify storefronts using custom Liquid and CSS, alongside deploying targeted Meta advertising campaigns for dynamic dropshipping environments.</p>
-                </div>
+    <section id="home">
+        <div class="hero-content reveal active">
+            <h1>Adarsha<br>Dhakal.</h1>
+            <div class="typing-container">
+                <span id="typewriter"></span><span class="cursor">|</span>
             </div>
-        </section>
+            <p>Bridging the gap between physical infrastructure and digital ecosystems.</p>
+        </div>
+    </section>
 
-        <section id="skills">
-            <h2>Technical Toolkit</h2>
-            <ul class="skills-list">
-                <li>HTML5 Canvas & CSS3</li>
-                <li>JavaScript</li>
-                <li>Shopify Liquid</li>
-                <li>Structural Analysis</li>
-                <li>AS 3600 & AS 4100</li>
-                <li>AutoCAD</li>
-                <li>Meta Ads</li>
-            </ul>
-        </section>
-    </div>
+    <section id="about" class="reveal">
+        <h2 class="section-title">About Me</h2>
+        <p>I am an engineering student at Melbourne Polytechnic with a deep passion for digital commerce and interactive web technologies. By combining my understanding of structural mechanics (AS 3600, AS 4100) with front-end code, I build highly functional, data-driven tools and exceptionally clean user interfaces.</p>
+        
+        <div class="skills-container">
+            <div class="skill-tag">HTML5 Canvas</div>
+            <div class="skill-tag">JavaScript / ES6</div>
+            <div class="skill-tag">Shopify Liquid</div>
+            <div class="skill-tag">Python Dashboards</div>
+            <div class="skill-tag">AutoCAD</div>
+            <div class="skill-tag">Meta Ads Manager</div>
+        </div>
+    </section>
+
+    <section id="projects" class="reveal">
+        <h2 class="section-title">Featured Work</h2>
+        <div class="grid">
+            <div class="glass-card">
+                <i class="fa-solid fa-layer-group"></i>
+                <h3>Structural Visualizer</h3>
+                <p>An interactive single-page application leveraging HTML5 Canvas and JavaScript to dynamically plot shear force and bending moment diagrams for precise beam analysis.</p>
+            </div>
+            <div class="glass-card">
+                <i class="fa-solid fa-chart-line"></i>
+                <h3>Academic Dashboard</h3>
+                <p>A custom tracking dashboard engineered to monitor, calculate, and visualize weighted assessments and final grades for complex engineering modules.</p>
+            </div>
+            <div class="glass-card">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <h3>E-Commerce Architecture</h3>
+                <p>Designed and optimized Shopify storefronts using custom Liquid and CSS, alongside deploying targeted Meta advertising campaigns for digital products.</p>
+            </div>
+        </div>
+    </section>
 
     <footer>
-        <p>&copy; 2026 Adarsha Dhakal. Let's build something great.</p>
-        <a href="mailto:your.email@example.com" class="btn">Get In Touch</a>
+        <p>&copy; 2026 Adarsha Dhakal. Built from scratch.</p>
     </footer>
 
+    <script>
+        const words = ["Structural Engineering Student.", "Front-End Developer.", "E-Commerce Strategist."];
+        let i = 0;
+        let timer;
+
+        function typingEffect() {
+            let word = words[i].split("");
+            var loopTyping = function() {
+                if (word.length > 0) {
+                    document.getElementById('typewriter').innerHTML += word.shift();
+                } else {
+                    setTimeout(deletingEffect, 2000);
+                    return false;
+                };
+                timer = setTimeout(loopTyping, 100);
+            };
+            loopTyping();
+        }
+
+        function deletingEffect() {
+            let word = words[i].split("");
+            var loopDeleting = function() {
+                if (word.length > 0) {
+                    word.pop();
+                    document.getElementById('typewriter').innerHTML = word.join("");
+                } else {
+                    if (words.length > (i + 1)) {
+                        i++;
+                    } else {
+                        i = 0;
+                    };
+                    typingEffect();
+                    return false;
+                };
+                timer = setTimeout(loopDeleting, 50);
+            };
+            loopDeleting();
+        }
+        
+        typingEffect();
+
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 150;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+    </script>
 </body>
 </html>
