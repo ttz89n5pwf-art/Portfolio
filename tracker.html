@@ -342,21 +342,16 @@
             chartInstance: null
         };
 
-        async function initAuthAndData() {
-            if (!auth) return;
-            
+       async function initAuthAndData() {
             try {
-                // Sign in anonymously to connect to Firebase
-                await signInAnonymously(auth);
-
-                // Use one fixed ID so all browsers share the exact same grades
+                // Skip the Firebase login and just use our shared ID directly
                 userId = "main_user";
                 
                 console.log("Connected to cloud storage. Loading data...");
                 await loadDataFromFirebase();
                 
             } catch (error) {
-                console.error("Auth/Data loading error:", error);
+                console.error("Data loading error:", error);
             }
         }
 
